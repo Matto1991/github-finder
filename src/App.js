@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Navbar from "./components/layout/Navbar";
 import Users from "./components/users/Users";
+import Search from "./components/users/Search";
 import axios from "axios";
 import "./App.css";
 
@@ -16,43 +17,40 @@ class App extends Component {
     loading: false,
   };
 
-  async componentDidMount() {
-    /* this.setState({
-      enviroment: {
-        clientId: `${process.env.REACT_APP_GITHUB_CLIENT_ID}`,
-        clientSecret: `${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`,
-      },
-    }); */
-
+  // Search Github users
+  searchUsers = async (text) => {
     this.setState({ loading: true });
+    const res = await axios.get(
+      `https://api.github.com/search/users?q=${text}&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
+    );
 
-    const res = await axios.get(`https://api.github.com/users?client_id=$
-    {process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=$
-    {process.env.REACT_APP_GITHUB_CLIENT_SECRET}`);
+    this.setState({ users: res.data.items, loading: false });
+  };
 
-    this.setState({ users: res.data, loading: false });
-    /*  setTimeout(() => {
-      this.setState({ backColor: "red" });
-    }, 2000); */
-  }
+  // Clear users from state
+  //lo que hace esta funcion es que al ser llamada vuelve a dejar users como un array vacio
+  // de este modo podemos dejar la pantalla en blanco sin que renderice usuarios
+  clearUsers = () => this.setState({ users: [], loading: false });
 
   render() {
+    const { loading, users } = this.state;
     return (
-      <div
-        className="App"
-        /*  style={{
-          backgroundColor: `${this.state.backColor}`,
-        }} */
-      >
+      <div className="App">
         <Navbar />
         <div className="container">
-          {/* <p>client_id:{this.state.enviroment.clientId}</p> */}
+          <Search
+            searchUsers={this.searchUsers}
+            clearUsers={this.clearUsers}
+            showClear={users.length > 0 ? true : false} //si el array de usuarios es mayor a cero su valor es true, sino es false
+          />
 
-          <Users loading={this.state.loading} users={this.state.users} />
+          <Users loading={loading} users={users} />
         </div>
       </div>
     );
   }
 }
+//clearUsers dentro del render recibe props del boton del evento onClick en search.js
+// Al hacer esto se llama a la funcion ClearUsers
 
 export default App;
