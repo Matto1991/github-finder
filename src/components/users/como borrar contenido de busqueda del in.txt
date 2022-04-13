@@ -1,2 +1,0 @@
-como borrar contenido de busqueda del input
-

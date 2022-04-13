@@ -1,20 +1,31 @@
 import React from "react";
 import PropTypes from "prop-types";
 import icon from "../../assets/git5.ico";
+import { Link } from "react-router-dom";
 
 const Navbar = ({ icon, title }) => {
   return (
-    <nav className="navbar bg-primary"
-    style={{color:'red'}}>
+    <nav className="navbar bg-primary" style={{ color: "red" }}>
       <h1>
-         {title}
+        {title}
         <img
           src={icon}
           alt=""
           className="round-img"
-          style={{ width: "60px"}}
+          style={{ width: "60px" }}
         />{" "}
       </h1>
+      <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/about">About</Link>
+        </li>
+        <li>
+          <Link to="/Contact">Contact</Link>
+        </li>
+      </ul>
     </nav>
   );
 };
